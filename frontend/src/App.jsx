@@ -3,6 +3,11 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
+// TODO:
+// - Update the update function
+// - Add support to add metrics
+// - Add a graph of data
+// - Add support for comment annotations
 
 function App() {
   const [biometrics, setBPAndWeight] = useState(false);
