@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Testing with examples from https://plotly.com/python/getting-started/
 #
