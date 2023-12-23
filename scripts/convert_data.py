@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 #
-# Grabbing the data from our source data file and converting to csv for use with graphing tools.
+# Grabbing the data from our source data file and importing to a postgres database.
 #
-
 
 import re
 import datetime
