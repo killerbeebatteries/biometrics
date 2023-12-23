@@ -6,7 +6,7 @@ const biometrics_model = require("./biometricsModel");
 
 app.use(express.json());
 app.use(function (req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
   res.setHeader(
     "Access-Control-Allow-Headers",
@@ -16,7 +16,7 @@ app.use(function (req, res, next) {
 });
 
 app.get("/", (req, res) => {
-  biometrics_model.getBPAndWeights()
+  biometrics_model.getBPAndWeight()
     .then((response) => {
       res.status(200).send(response);
     })
