@@ -1,11 +1,8 @@
-import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import "./App.css";
 
 // TODO:
-// - Update the update function
-// - Add support to add metrics
+// - Make it easier to add and modify records
 // - Add a graph of data
 // - Add support for comment annotations
 
@@ -13,63 +10,76 @@ function App() {
   const [biometrics, setBPAndWeight] = useState(false);
 
   function getBPAndWeight() {
-    fetch('http://localhost:3001')
-      .then(response => {
+    fetch("http://localhost:3001")
+      .then((response) => {
         return response.text();
       })
-      .then(data => {
+      .then((data) => {
         setBPAndWeight(data);
       });
   }
 
   function createBPAndWeight() {
-    let name = prompt('Enter biometrics name');
-    let email = prompt('Enter biometrics email');
-    fetch('http://localhost:3001/biometrics', {
-      method: 'POST',
+    let date = prompt("Enter date in 20240124 format.");
+    let time = prompt("Enter time in 24 hour format.");
+    let sys  = prompt("Enter systolic pressure.");
+    let dia  = prompt("Enter diasystolic pressure.");
+    let bp   = prompt("Enter blood pressure.");
+    let weight_total  = prompt("Enter weight in KG.");
+    let weight_fat    = prompt("Enter body fat in KG.");
+    let weight_muscle = prompt("Enter muscle in KG.");
+    let comment       = prompt("Enter a comment.");
+    fetch("http://localhost:3001/biometrics", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({name, email}),
+      body: JSON.stringify({ date, time, sys, dia, bp, weight_total, weight_fat, weight_muscle, comment }),
     })
-      .then(response => {
+      .then((response) => {
         return response.text();
       })
-      .then(data => {
+      .then((data) => {
         alert(data);
         getBPAndWeight();
       });
   }
 
   function deleteBPAndWeight() {
-    let id = prompt('Enter biometrics id');
+    let id = prompt("Enter biometrics id");
     fetch(`http://localhost:3001/biometrics/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     })
-      .then(response => {
+      .then((response) => {
         return response.text();
       })
-      .then(data => {
+      .then((data) => {
         alert(data);
         getBPAndWeight();
       });
   }
 
   function updateBPAndWeight() {
-    let id = prompt('Enter biometrics id');
-    let name = prompt('Enter new biometrics name');
-    let email = prompt('Enter new biometrics email');
+    let date = prompt("Enter date in 20240124 format.");
+    let time = prompt("Enter time in 24 hour format.");
+    let sys  = prompt("Enter systolic pressure.");
+    let dia  = prompt("Enter diasystolic pressure.");
+    let bp   = prompt("Enter blood pressure.");
+    let weight_total  = prompt("Enter weight in KG.");
+    let weight_fat    = prompt("Enter body fat in KG.");
+    let weight_muscle = prompt("Enter muscle in KG.");
+    let comment       = prompt("Enter a comment.");
     fetch(`http://localhost:3001/biometrics/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({name, email}),
+      body: JSON.stringify({ date, time, sys, dia, bp, weight_total, weight_fat, weight_muscle, comment}),
     })
-      .then(response => {
+      .then((response) => {
         return response.text();
       })
-      .then(data => {
+      .then((data) => {
         alert(data);
         getBPAndWeight();
       });
@@ -80,7 +90,7 @@ function App() {
   }, []);
   return (
     <div>
-      {biometrics ? biometrics : 'There is no biometrics data available'}
+      {biometrics ? biometrics : "There is no biometrics data available"}
       <br />
       <button onClick={createBPAndWeight}>Add biometrics</button>
       <br />

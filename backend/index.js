@@ -25,7 +25,7 @@ app.get("/", (req, res) => {
     });
 });
 
-app.post("/biometricss", (req, res) => {
+app.post("/biometrics", (req, res) => {
   biometrics_model.createBPAndWeight(req.body)
     .then((response) => {
       res.status(200).send(response);
@@ -35,7 +35,7 @@ app.post("/biometricss", (req, res) => {
     });
 });
 
-app.delete("/biometricss/:id", (req, res) => {
+app.delete("/biometrics/:id", (req, res) => {
   biometrics_model.deleteBPAndWeight(req.params.id)
     .then((response) => {
       res.status(200).send(response);
@@ -44,7 +44,7 @@ app.delete("/biometricss/:id", (req, res) => {
       res.status(500).send(error);
     });
 });
-app.put("/biometricss/:id", (req, res) => {
+app.put("/biometrics/:id", (req, res) => {
   const id = req.params.id;
   const body = req.body;
   biometrics_model
