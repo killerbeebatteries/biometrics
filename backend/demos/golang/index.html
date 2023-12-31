@@ -1,0 +1,12 @@
+<html>
+  <head>
+    <title>Biometrics</title>
+  </head>
+  <body>
+    <h1>Biometrics</h1>
+    {{ range  $index, $element := .Biometrics }}
+
+    <p>{{ $element }}</p>
+    {{ end}}
+  </body>
+</html>
