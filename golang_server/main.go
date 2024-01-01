@@ -61,14 +61,14 @@ func main() {
 		return biometrics, nil
 	}
 
-	// addBiometricData := func(biometric Biometric) error {
-	//   _, err := DB.Exec("INSERT INTO bp_and_weight (date, time, sys, dia, bp, weight_total, weight_fat, weight_muscle, comment) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)", biometric.Date, biometric.Time, biometric.Sys, biometric.Dia, biometric.Bp, biometric.Weight_total, biometric.Weight_fat, biometric.Weight_muscle, biometric.Comment)
-	//   if err != nil {
-	//     log.Print("error inserting database record: %v", err)
-	//     return err
-	//   }
-	//   return nil
-	// }
+	addBiometricData := func(biometric Biometric) error {
+	  _, err := DB.Exec("INSERT INTO bp_and_weight (date, time, sys, dia, bp, weight_total, weight_fat, weight_muscle, comment) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)", biometric.Date, biometric.Time, biometric.Sys, biometric.Dia, biometric.Bp, biometric.Weight_total, biometric.Weight_fat, biometric.Weight_muscle, biometric.Comment)
+	  if err != nil {
+	    log.Print("error inserting database record: %v", err)
+	    return err
+	  }
+	  return nil
+	}
 
 	handleAddBiometric := func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()
@@ -108,23 +108,21 @@ func main() {
 
 		err = decoder.Decode(&biometric, r.PostForm)
 
-		fmt.Printf("Biometric: %v", biometric)
-
 		if err != nil {
 			log.Print("Failed to decode form values: %v", err)
 			http.Error(w, "Failed to decode form values", http.StatusInternalServerError)
 			return
 		}
 
-		// err = addBiometricData(biometric)
-		// if err != nil {
-		//   log.Print("Failed to add biometric data: %v", err)
-		//   http.Error(w, "Failed to add biometric data", http.StatusInternalServerError)
-		//   return
-		// }
-		//
-		// // redirect to main page
-		// http.Redirect(w, r, "/", http.StatusFound)
+		err = addBiometricData(biometric)
+		if err != nil {
+		  log.Print("Failed to add biometric data: %v", err)
+		  http.Error(w, "Failed to add biometric data", http.StatusInternalServerError)
+		  return
+		}
+
+		// redirect to main page
+		http.Redirect(w, r, "/", http.StatusFound)
 
 	}
 
