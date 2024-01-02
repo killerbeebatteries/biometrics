@@ -8,3 +8,4 @@ Tracking blood pressure and weight. 💪❤️
 - Implement pretty graphs for weight and blood pressure
 - Implement hosting both db and webapp in docker containers using docker-compose
 - Document dev and hosting steps
+- Annotations for comments
