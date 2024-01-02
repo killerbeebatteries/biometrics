@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>D3.js Line Graph</title>
+    <!-- Include D3.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+  </head>
+  <body>
+    <svg width="800" height="400"></svg>
+
+    <script>
+      // Sample data
+      var jsonData = {{.}}
+      var parsedData = JSON.parse(jsonData);
+
+      // Parse the date string using D3's time parse function
+      var parseDate = d3.utcParse("%Y-%m-%dT%H:%M:%SZ");
+
+      // Convert the date strings in the data to JavaScript Date objects
+      parsedData.Biometrics.forEach(function (d) {
+        d.Date = parseDate(d.Date);
+      });
+
+      // Set the dimensions and margins of the graph
+      var margin = { top: 20, right: 20, bottom: 30, left: 50 },
+        width = 800 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+
+      // Append the SVG object to the body of the page
+      var svg = d3
+        .select("body")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      // X scale and axis
+      var x = d3
+        .scaleTime()
+        .domain([
+          new Date("2017-01-01T00:00:00Z"),
+          d3.max(parsedData.Biometrics, function (d) {
+            return d.Date;
+          }),
+        ])
+        .range([0, width]);
+
+      svg
+        .append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+      // Y scale and axis
+      var y = d3
+        .scaleLinear()
+        .domain([
+          0,
+          d3.max(parsedData.Biometrics, function (d) {
+            return d.Weight_total;
+          }),
+        ])
+        .range([height, 0]);
+
+      svg.append("g").call(d3.axisLeft(y));
+
+      // Line function
+      var line = d3
+        .line()
+        .x(function (d) {
+          return x(d.Date);
+        })
+        .y(function (d) {
+          return y(d.Weight_total);
+        });
+
+      // Add the line
+      svg
+        .append("path")
+        .data([parsedData.Biometrics])
+        .attr("class", "line")
+        .attr("d", line);
+    </script>
+  </body>
+</html>
