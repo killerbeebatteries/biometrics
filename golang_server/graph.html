@@ -51,8 +51,8 @@
            width = 1600 - margin.left - margin.right,
            height = 400 - margin.top - margin.bottom;
 
-          // Append the SVG object to the body of the page
-          var svg = d3
+          // Append the weightSVG object to the body of the page
+          var weightSVG = d3
            .select("#weight")
            .append("svg")
            .attr("width", width + margin.left + margin.right)
@@ -71,7 +71,7 @@
            ])
            .range([0, width]);
 
-          svg
+          weightSVG
            .append("g")
            .attr("transform", "translate(0," + height + ")")
            .call(d3.axisBottom(x));
@@ -87,7 +87,7 @@
            ])
            .range([height, 0]);
 
-          svg.append("g").call(d3.axisLeft(y));
+          weightSVG.append("g").call(d3.axisLeft(y));
 
           // Line functions
           var lineWeightTotal = d3
@@ -118,26 +118,26 @@
            });
 
           // Add the lines
-          svg
+          weightSVG
            .append("path")
            .data([parsedData.Biometrics])
            .attr("class", "line-weight-total")
            .attr("d", lineWeightTotal);
 
-          svg
+          weightSVG
            .append("path")
            .data([parsedData.Biometrics])
            .attr("class", "line-weight-fat")
            .attr("d", lineWeightFat);
 
-          svg
+          weightSVG
            .append("path")
            .data([parsedData.Biometrics])
            .attr("class", "line-weight-muscle")
            .attr("d", lineWeightMuscle);
 
       // Annotate with hover text
-      svg.selectAll(".annotation")
+      weightSVG.selectAll(".annotation")
       .data(parsedData.Biometrics)
       .enter().append("text")
       .attr("class", "annotation")
@@ -149,21 +149,21 @@
       .style("fill", "black"); // Adjust font color
 
       // Add hover functionality
-      svg.on("mousemove", function(event) {
+      weightSVG.on("mousemove", function(event) {
       var mouseX = d3.pointer(event)[0];
       var bisectDate = d3.bisector(function(d) { return x(d.Date); }).left;
       var index = bisectDate(parsedData.Biometrics, x.invert(mouseX), 1);
       var closestDataPoint = parsedData.Biometrics[index - 1];
 
         // Show the annotation text on hover
-        svg.selectAll(".annotation")
+        weightSVG.selectAll(".annotation")
             .style("opacity", function(annotation) {
                 return annotation.Date === closestDataPoint.Date ? 1 : 0;
             });
        })
        .on("mouseout", function() {
         // Hide all annotation text when not hovering
-        svg.selectAll(".annotation")
+        weightSVG.selectAll(".annotation")
             .style("opacity", 0);
        });
     </script>
