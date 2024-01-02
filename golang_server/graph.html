@@ -64,10 +64,10 @@
           var x = d3
            .scaleTime()
            .domain([
-				 new Date("2017-01-01T00:00:00Z"),
-				 d3.max(parsedData.Biometrics, function (d) {
-					 return d.Date;
-				 }),
+         new Date("2017-01-01T00:00:00Z"),
+         d3.max(parsedData.Biometrics, function (d) {
+           return d.Date;
+         }),
            ])
            .range([0, width]);
 
@@ -80,10 +80,10 @@
           var y = d3
            .scaleLinear()
            .domain([
-				 0,
-				 d3.max(parsedData.Biometrics, function (d) {
-					 return d.Weight_total;
-				 }),
+         0,
+         d3.max(parsedData.Biometrics, function (d) {
+           return d.Weight_total;
+         }),
            ])
            .range([height, 0]);
 
@@ -93,28 +93,28 @@
           var lineWeightTotal = d3
            .line()
            .x(function (d) {
-				 return x(d.Date);
+         return x(d.Date);
            })
            .y(function (d) {
-				 return y(d.Weight_total);
+         return y(d.Weight_total);
            });
 
           var lineWeightFat = d3
            .line()
            .x(function (d) {
-				 return x(d.Date);
+         return x(d.Date);
            })
            .y(function (d) {
-				 return y(d.Weight_fat);
+         return y(d.Weight_fat);
            });
 
           var lineWeightMuscle = d3
            .line()
            .x(function (d) {
-				 return x(d.Date);
+         return x(d.Date);
            })
            .y(function (d) {
-				 return y(d.Weight_muscle);
+         return y(d.Weight_muscle);
            });
 
           // Add the lines
@@ -145,8 +145,8 @@
       .attr("y", function(d) { return y(d.Weight_total) - 10; })
       .text(function(d) { return d.Comment; })
       .style("opacity", 0)  // Initially hide the text
-			.style("font-size", "12px") // Adjust font size
-			.style("fill", "black"); // Adjust font color
+      .style("font-size", "12px") // Adjust font size
+      .style("fill", "black"); // Adjust font color
 
       // Add hover functionality
       svg.on("mousemove", function(event) {
@@ -155,16 +155,16 @@
       var index = bisectDate(parsedData.Biometrics, x.invert(mouseX), 1);
       var closestDataPoint = parsedData.Biometrics[index - 1];
 
-				// Show the annotation text on hover
-				svg.selectAll(".annotation")
-						.style("opacity", function(annotation) {
-								return annotation.Date === closestDataPoint.Date ? 1 : 0;
-						});
+        // Show the annotation text on hover
+        svg.selectAll(".annotation")
+            .style("opacity", function(annotation) {
+                return annotation.Date === closestDataPoint.Date ? 1 : 0;
+            });
        })
        .on("mouseout", function() {
-				// Hide all annotation text when not hovering
-				svg.selectAll(".annotation")
-						.style("opacity", 0);
+        // Hide all annotation text when not hovering
+        svg.selectAll(".annotation")
+            .style("opacity", 0);
        });
     </script>
   </body>
