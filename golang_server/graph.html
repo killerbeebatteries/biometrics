@@ -27,6 +27,28 @@
         stroke: green; /* Change the color to your preference */
         stroke-width: 2px;
       }
+
+      /* Styles for the BP line */
+      .line-bp {
+        fill: none;
+        stroke: darkblue; /* Change the color to your preference */
+        stroke-width: 2px;
+      }
+
+      /* Styles for the Sys line */
+      .line-sys {
+        fill: none;
+        stroke: purple; /* Change the color to your preference */
+        stroke-width: 2px;
+      }
+
+      /* Styles for the Dia line */
+      .line-dia {
+        fill: none;
+        stroke: orange; /* Change the color to your preference */
+        stroke-width: 2px;
+      }
+
     </style>
   </head>
   <body>
@@ -46,12 +68,15 @@
            d.Date = parseDate(d.Date);
           });
 
+          console.log(parsedData.Biometrics);
           // Set the dimensions and margins of the graph
           var margin = { top: 20, right: 20, bottom: 30, left: 50 },
            width = 1600 - margin.left - margin.right,
            height = 400 - margin.top - margin.bottom;
 
-          // Append the weightSVG object to the body of the page
+          /* Weight Graph */
+
+          // Append the weightSVG object to the weight div
           var weightSVG = d3
            .select("#weight")
            .append("svg")
@@ -164,6 +189,124 @@
        .on("mouseout", function() {
         // Hide all annotation text when not hovering
         weightSVG.selectAll(".annotation")
+            .style("opacity", 0);
+       });
+
+          /* BP Graph */
+
+          // Append the BpSVG object to the weight div
+          var BpSVG = d3
+           .select("#weight")
+           .append("svg")
+           .attr("width", width + margin.left + margin.right)
+           .attr("height", height + margin.top + margin.bottom)
+           .append("g")
+           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          // X scale and axis
+          var x = d3
+           .scaleTime()
+           .domain([
+         new Date("2017-01-01T00:00:00Z"),
+         d3.max(parsedData.Biometrics, function (d) {
+           return d.Date;
+         }),
+           ])
+           .range([0, width]);
+
+          BpSVG
+           .append("g")
+           .attr("transform", "translate(0," + height + ")")
+           .call(d3.axisBottom(x));
+
+          // Y scale and axis
+          var y = d3
+           .scaleLinear()
+           .domain([
+         0,
+         d3.max(parsedData.Biometrics, function (d) {
+           return d.Sys;
+         }),
+           ])
+           .range([height, 0]);
+
+          BpSVG.append("g").call(d3.axisLeft(y));
+
+          // Line functions
+          var lineBP = d3
+           .line()
+           .x(function (d) {
+         return x(d.Date);
+           })
+           .y(function (d) {
+         return y(d.BP);
+           });
+
+          var lineSys = d3
+           .line()
+           .x(function (d) {
+          return x(d.Date);
+            })
+          .y(function (d) {
+          return y(d.Sys);
+            });
+
+          var lineDia = d3
+            .line()
+            .x(function (d) {
+          return x(d.Date);
+            })
+          .y(function (d) {
+          return y(d.Dia);
+            });
+
+          // Add the lines
+          BpSVG
+           .append("path")
+           .data([parsedData.Biometrics])
+           .attr("class", "line-bp")
+           .attr("d", lineBP);
+
+          BpSVG
+            .append("path")
+            .data([parsedData.Biometrics])
+            .attr("class", "line-sys")
+            .attr("d", lineSys);
+
+          BpSVG
+            .append("path")
+            .data([parsedData.Biometrics])
+            .attr("class", "line-dia")
+            .attr("d", lineDia);
+
+      // Annotate with hover text
+      BpSVG.selectAll(".annotation")
+      .data(parsedData.Biometrics)
+      .enter().append("text")
+      .attr("class", "annotation")
+      .attr("x", function(d) { return x(d.Date); })
+      .attr("y", function(d) { return y(d.Weight_total) - 10; })
+      .text(function(d) { return d.Comment; })
+      .style("opacity", 0)  // Initially hide the text
+      .style("font-size", "12px") // Adjust font size
+      .style("fill", "black"); // Adjust font color
+
+      // Add hover functionality
+      BpSVG.on("mousemove", function(event) {
+      var mouseX = d3.pointer(event)[0];
+      var bisectDate = d3.bisector(function(d) { return x(d.Date); }).left;
+      var index = bisectDate(parsedData.Biometrics, x.invert(mouseX), 1);
+      var closestDataPoint = parsedData.Biometrics[index - 1];
+
+        // Show the annotation text on hover
+        BpSVG.selectAll(".annotation")
+            .style("opacity", function(annotation) {
+                return annotation.Date === closestDataPoint.Date ? 1 : 0;
+            });
+       })
+       .on("mouseout", function() {
+        // Hide all annotation text when not hovering
+        BpSVG.selectAll(".annotation")
             .style("opacity", 0);
        });
     </script>

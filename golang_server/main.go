@@ -20,7 +20,7 @@ type Biometric struct {
 	Time          *time.Time
 	Sys           *int
 	Dia           *int
-	Bp            *int
+	BP            *int
 	Weight_total  *float64
 	Weight_fat    *float64
 	Weight_muscle *float64
@@ -50,7 +50,7 @@ func main() {
 
 			var biometric Biometric
 
-			err = rows.Scan(&biometric.Id, &biometric.Date, &biometric.Time, &biometric.Sys, &biometric.Dia, &biometric.Bp, &biometric.Weight_total, &biometric.Weight_fat, &biometric.Weight_muscle, &biometric.Comment)
+			err = rows.Scan(&biometric.Id, &biometric.Date, &biometric.Time, &biometric.Sys, &biometric.Dia, &biometric.BP, &biometric.Weight_total, &biometric.Weight_fat, &biometric.Weight_muscle, &biometric.Comment)
 			if err != nil {
 				log.Print("error assigning biometrics data from database: %v", err)
 				return nil, err
@@ -63,7 +63,7 @@ func main() {
 	}
 
 	addBiometricData := func(biometric Biometric) error {
-		_, err := DB.Exec("INSERT INTO bp_and_weight (date, time, sys, dia, bp, weight_total, weight_fat, weight_muscle, comment) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)", biometric.Date, biometric.Time, biometric.Sys, biometric.Dia, biometric.Bp, biometric.Weight_total, biometric.Weight_fat, biometric.Weight_muscle, biometric.Comment)
+		_, err := DB.Exec("INSERT INTO bp_and_weight (date, time, sys, dia, bp, weight_total, weight_fat, weight_muscle, comment) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)", biometric.Date, biometric.Time, biometric.Sys, biometric.Dia, biometric.BP, biometric.Weight_total, biometric.Weight_fat, biometric.Weight_muscle, biometric.Comment)
 		if err != nil {
 			log.Print("error inserting database record: %v", err)
 			return err
