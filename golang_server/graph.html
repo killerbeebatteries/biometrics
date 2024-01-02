@@ -66,8 +66,8 @@
 
       svg.append("g").call(d3.axisLeft(y));
 
-      // Line function
-      var line = d3
+      // Line functions
+      var lineWeightTotal = d3
         .line()
         .x(function (d) {
           return x(d.Date);
@@ -76,12 +76,43 @@
           return y(d.Weight_total);
         });
 
-      // Add the line
+      var lineWeightFat = d3
+        .line()
+        .x(function (d) {
+          return x(d.Date);
+        })
+        .y(function (d) {
+          return y(d.Weight_fat);
+        });
+
+      var lineWeightMuscle = d3
+        .line()
+        .x(function (d) {
+          return x(d.Date);
+        })
+        .y(function (d) {
+          return y(d.Weight_muscle);
+        });
+
+      // Add the lines
       svg
         .append("path")
         .data([parsedData.Biometrics])
-        .attr("class", "line")
-        .attr("d", line);
+        .attr("class", "line-weight-total")
+        .attr("d", lineWeightTotal);
+
+      svg
+        .append("path")
+        .data([parsedData.Biometrics])
+        .attr("class", "line-weight-fat")
+        .attr("d", lineWeightFat);
+
+      svg
+        .append("path")
+        .data([parsedData.Biometrics])
+        .attr("class", "line-weight-muscle")
+        .attr("d", lineWeightMuscle);
+
     </script>
   </body>
 </html>
