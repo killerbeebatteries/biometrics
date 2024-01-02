@@ -9,6 +9,7 @@ import (
 	"reflect"
 	"regexp"
 	"time"
+  "encoding/json"
 )
 
 // using pointers in the data structure to support null values
@@ -62,12 +63,12 @@ func main() {
 	}
 
 	addBiometricData := func(biometric Biometric) error {
-	  _, err := DB.Exec("INSERT INTO bp_and_weight (date, time, sys, dia, bp, weight_total, weight_fat, weight_muscle, comment) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)", biometric.Date, biometric.Time, biometric.Sys, biometric.Dia, biometric.Bp, biometric.Weight_total, biometric.Weight_fat, biometric.Weight_muscle, biometric.Comment)
-	  if err != nil {
-	    log.Print("error inserting database record: %v", err)
-	    return err
-	  }
-	  return nil
+		_, err := DB.Exec("INSERT INTO bp_and_weight (date, time, sys, dia, bp, weight_total, weight_fat, weight_muscle, comment) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)", biometric.Date, biometric.Time, biometric.Sys, biometric.Dia, biometric.Bp, biometric.Weight_total, biometric.Weight_fat, biometric.Weight_muscle, biometric.Comment)
+		if err != nil {
+			log.Print("error inserting database record: %v", err)
+			return err
+		}
+		return nil
 	}
 
 	handleAddBiometric := func(w http.ResponseWriter, r *http.Request) {
@@ -90,7 +91,7 @@ func main() {
 				}
 			}
 
-      timePattern := `^([01]\d|2[0-3]):[0-5]\d$`
+			timePattern := `^([01]\d|2[0-3]):[0-5]\d$`
 			r = regexp.MustCompile(timePattern)
 			if r.MatchString(value) {
 				if v, err := time.Parse("15:04", value); err == nil {
@@ -116,14 +117,38 @@ func main() {
 
 		err = addBiometricData(biometric)
 		if err != nil {
-		  log.Print("Failed to add biometric data: %v", err)
-		  http.Error(w, "Failed to add biometric data", http.StatusInternalServerError)
-		  return
+			log.Print("Failed to add biometric data: %v", err)
+			http.Error(w, "Failed to add biometric data", http.StatusInternalServerError)
+			return
 		}
 
 		// redirect to main page
 		http.Redirect(w, r, "/", http.StatusFound)
 
+	}
+
+	handleGraphPage := func(w http.ResponseWriter, r *http.Request) {
+		tmpl := template.Must(template.ParseFiles("graph.html"))
+		biometrics, err := getAllBiometricData()
+
+		if err != nil {
+			log.Print("Failed to get biometric data: %v", err)
+			http.Error(w, "Failed to get biometric data", http.StatusInternalServerError)
+			return
+		}
+
+		data := map[string][]Biometric{
+			"Biometrics": biometrics,
+		}
+    
+    // Convert data to JSON
+    jsonData, err := json.Marshal(data)
+    if err != nil {
+      http.Error(w, "Error encoding data to JSON", http.StatusInternalServerError)
+      return
+    }
+
+		tmpl.Execute(w, string(jsonData))
 	}
 
 	handleMainPage := func(w http.ResponseWriter, r *http.Request) {
@@ -146,6 +171,7 @@ func main() {
 	// define handlers
 	http.HandleFunc("/", handleMainPage)
 	http.HandleFunc("/add-biometric", handleAddBiometric)
+	http.HandleFunc("/graph", handleGraphPage)
 
 	log.Fatal(http.ListenAndServe(":8000", nil))
 
