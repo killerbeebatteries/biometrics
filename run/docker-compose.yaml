@@ -14,9 +14,9 @@ services:
   web:
     restart: always
     build:
-      dockerfile: ../build/Dockerfile
+      dockerfile: ../golang_server/Dockerfile
       context: ../golang_server/
-      target: dev
+      target: "${TARGET}"
     depends_on:
       - db
     ports:
@@ -30,8 +30,6 @@ services:
       - WEB_PORT=${WEB_PORT}
     links:
       - db
-    volumes:
-      - '../golang_server:/opt/app/api'
 volumes:
   db:
     driver: local
