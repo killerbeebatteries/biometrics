@@ -40,6 +40,7 @@ Docker Compose would use that stage of the Dockerfile if the target was set to `
 Using the magic of [docker-compose and air](https://firehydrant.com/blog/develop-a-go-app-with-docker-compose/), we can run a hot-reloadable environment that will run our app on whatever port we declared in `WEB_PORT`.
 
 ```
+docker-compose build
 docker-compose up
 ```
 
@@ -49,7 +50,7 @@ docker-compose up
 
 Create a .env file and place it in the `golang_server` directory:
 ```
-TARGET=production
+TARGET=prod
 POSTGRES_PASSWORD=differenttodevhopefully
 
 DB_USER="biometrics_user"
@@ -63,5 +64,6 @@ WEB_PORT="8000"
 ## Run Environment
 
 ```
+docker-compose build
 docker-compose -d
 ```
