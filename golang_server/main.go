@@ -180,7 +180,7 @@ func main() {
     log.Fatal("WEB_PORT environment variable not set")
   }
 
-  fmt.Sprintf("Starting web server on port %s", WEB_PORT)
+  fmt.Println("Starting web server on port", WEB_PORT)
 
   log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", WEB_PORT), nil))
 
