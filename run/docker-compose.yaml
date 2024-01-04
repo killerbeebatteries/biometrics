@@ -28,6 +28,8 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
       - WEB_PORT=${WEB_PORT}
+    volumes:
+      - ../golang_server:/opt/app/api
     links:
       - db
 volumes:
