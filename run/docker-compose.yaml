@@ -1,3 +1,4 @@
+---
 version: '3.8'
 services:
   db:
@@ -7,9 +8,30 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
-      - '5432:5432'
-    volumes: 
+      - "${DB_PORT}:${DB_PORT}"
+    volumes:
       - db:/var/lib/postgresql/data
+  web:
+    restart: always
+    build:
+      dockerfile: ../golang_server/Dockerfile
+      context: ../golang_server/
+      target: "${TARGET}"
+    depends_on:
+      - db
+    ports:
+      - "${WEB_PORT}:${WEB_PORT}"
+    environment:
+      - DB_HOST=db
+      - DB_USER=${DB_USER}
+      - DB_PORT=${DB_PORT}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - WEB_PORT=${WEB_PORT}
+    volumes:
+      - ../golang_server:/opt/app/api
+    links:
+      - db
 volumes:
   db:
     driver: local

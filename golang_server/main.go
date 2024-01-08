@@ -10,7 +10,10 @@ import (
 	"regexp"
 	"time"
   "encoding/json"
+  "os"
 )
+
+var WEB_PORT string = os.Getenv("WEB_PORT")
 
 // using pointers in the data structure to support null values
 // assigned from the database query results.
@@ -173,6 +176,12 @@ func main() {
 	http.HandleFunc("/add-biometric", handleAddBiometric)
 	http.HandleFunc("/graph", handleGraphPage)
 
-	log.Fatal(http.ListenAndServe(":8000", nil))
+  if WEB_PORT == "" {
+    log.Fatal("WEB_PORT environment variable not set")
+  }
+
+  fmt.Println("Starting web server on port", WEB_PORT)
+
+  log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", WEB_PORT), nil))
 
 }
