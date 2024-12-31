@@ -1,5 +1,4 @@
 ---
-version: '3.8'
 services:
   db:
     image: postgres:14.1-alpine
@@ -30,8 +29,6 @@ services:
       - WEB_PORT=${WEB_PORT}
     volumes:
       - ../golang_server:/opt/app/api
-    links:
-      - db
 volumes:
   db:
     driver: local
